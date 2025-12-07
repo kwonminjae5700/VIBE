@@ -1,7 +1,9 @@
 import { Play } from "lucide-react";
 import { CardData } from "@/entities/music/model/types";
 
-interface CardProps extends CardData {}
+interface CardProps extends CardData {
+  onClick?: () => void;
+}
 
 export function MusicCard({
   title,
@@ -12,9 +14,10 @@ export function MusicCard({
   overlayColor,
   isCircle,
   bgColor,
+  onClick,
 }: CardProps) {
   return (
-    <div className="group cursor-pointer h-full">
+    <div className="group cursor-pointer h-full" onClick={onClick}>
       <div
         className={`${
           bgColor || "bg-[#181818]"
@@ -42,7 +45,7 @@ export function MusicCard({
             ) : null}
 
             {overlayText && (
-              <div className="absolute bottom-3 left-0 right-0 text-center z-10">
+              <div className="absolute bottom-2 left-0 right-0 text-center z-10">
                 <span
                   className="text-3xl font-black text-transparent bg-clip-text bg-linear-to-b from-orange-400 to-red-600 drop-shadow-md"
                   style={{ fontFamily: "Impact, sans-serif" }}
