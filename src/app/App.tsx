@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import { Sidebar } from "@/widgets/Sidebar/ui/Sidebar";
-import { Header } from "@/widgets/Header/ui/Header";
-import { PlayerBar } from "@/widgets/PlayerBar/ui/PlayerBar";
-import { MainPage } from "@/pages/main/ui/MainPage";
-import { PlaceholderPage } from "@/pages/placeholder/ui/PlaceholderPage";
+import { Sidebar } from "@/widgets/Sidebar";
+import { Header } from "@/widgets/Header";
+import { PlayerBar } from "@/widgets/PlayerBar";
+import { MainPage } from "@/pages/main";
+import { PlaceholderPage } from "@/pages/placeholder";
 
 export default function App() {
   return (

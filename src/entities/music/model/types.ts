@@ -7,6 +7,7 @@ export interface CardData {
   overlayColor?: string;
   isCircle?: boolean;
   bgColor?: string;
+  track?: Track;
 }
 
 export interface MixCardData {
@@ -17,4 +18,14 @@ export interface MixCardData {
   artists: string;
   icon?: string;
   isArtist?: boolean;
+}
+
+export interface Track {
+  id: string;
+  title: string;
+  artist: string;
+  album: string;
+  coverUrl: string;
+  audioUrl: string;
+  duration: number; // seconds
 }
