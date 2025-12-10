@@ -14,7 +14,7 @@ class AttentionMask extends tf.layers.Layer {
       let inputSum = tf.sum(input, 1, true);
       inputSum = tf.sum(inputSum, 2, true);
       const out = input
-        .div(inputSum)
+        .div(inputSum.add(tf.scalar(1e-7)))
         .mul(input.shape[1])
         .mul(input.shape[2])
         .mul(0.5);
