@@ -1,4 +1,4 @@
-import { Home, BarChart2, Disc, Heart, Sparkles, LucideIcon } from "lucide-react";
+import { Home, BarChart2, Disc, Heart, Sparkles, LucideIcon,BookAudio } from "lucide-react";
 
 export interface NavigationItem {
   name: string;
@@ -23,9 +23,9 @@ export const sidebarNavigation: NavigationItem[] = [
     icon: Sparkles,
   },
   {
-    name: "오디오",
-    path: "/audio",
-    icon: Disc,
+    name: "공부",
+    path: "/study",
+    icon: BookAudio,
     hasExternalLink: true,
   },
   {
