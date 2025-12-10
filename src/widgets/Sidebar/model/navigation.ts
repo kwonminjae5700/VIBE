@@ -1,4 +1,4 @@
-import { Home, BarChart2, Disc, Heart, LucideIcon } from "lucide-react";
+import { Home, BarChart2, Disc, Heart, Sparkles, LucideIcon } from "lucide-react";
 
 export interface NavigationItem {
   name: string;
@@ -18,9 +18,9 @@ export const sidebarNavigation: NavigationItem[] = [
     filled: true,
   },
   {
-    name: "차트",
-    path: "/chart",
-    icon: BarChart2,
+    name: "컨텍스트 인지",
+    path: "/aichar",
+    icon: Sparkles,
   },
   {
     name: "오디오",
