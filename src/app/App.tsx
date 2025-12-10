@@ -4,6 +4,7 @@ import { Header } from "@/widgets/Header";
 import { PlayerBar } from "@/widgets/PlayerBar";
 import { MainPage } from "@/pages/main";
 import { PlaceholderPage } from "@/pages/placeholder";
+import { StudyPage } from "@/pages/study";
 
 export default function App() {
   return (
@@ -14,7 +15,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/chart" element={<PlaceholderPage title="차트" />} />
-          <Route path="/audio" element={<PlaceholderPage title="오디오" />} />
+          <Route path="/study" element={<StudyPage />} />
           <Route path="/library" element={<PlaceholderPage title="보관함" />} />
         </Routes>
       </div>
