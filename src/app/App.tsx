@@ -4,7 +4,12 @@ import { Header } from "@/widgets/Header";
 import { PlayerBar } from "@/widgets/PlayerBar";
 import { MainPage } from "@/pages/main";
 import { PlaceholderPage } from "@/pages/placeholder";
+
+import { AiCharPage } from "@/pages/aichar";
+import { AiChartPage } from "@/pages/aichart";
+
 import { StudyPage } from "@/pages/study";
+
 
 export default function App() {
   return (
@@ -17,6 +22,8 @@ export default function App() {
           <Route path="/chart" element={<PlaceholderPage title="차트" />} />
           <Route path="/study" element={<StudyPage />} />
           <Route path="/library" element={<PlaceholderPage title="보관함" />} />
+          <Route path="/aichar" element={<AiCharPage />} />
+          <Route path="/aichart" element={<AiChartPage />} />
         </Routes>
       </div>
       <PlayerBar />
