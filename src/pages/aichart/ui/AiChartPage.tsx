@@ -1,59 +1,22 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { TrendingUp, Music, Play, BarChart2 } from 'lucide-react';
 import { usePlayer } from '@/features/player';
 import { Track } from '@/entities/music/model/types';
 
-interface CategoryInfo {
-  id: string;
-  name: string;
-  description: string;
-}
-
 export const AiChartPage = () => {
-  const [categories, setCategories] = useState<CategoryInfo[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const location = useLocation();
   const [recommendations, setRecommendations] = useState<Track[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const { playTrack } = usePlayer();
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/emotions');
-      if (!response.ok) {
-        throw new Error('감정 목록을 불러올 수 없습니다.');
-      }
-      const data = await response.json();
-      const emotionCategories = data.emotions.map((emotion: any) => ({
-        id: emotion.id,
-        name: emotion.id,
-        description: emotion.description
-      }));
-      setCategories(emotionCategories);
-      if (emotionCategories.length > 0) {
-        setSelectedCategory(emotionCategories[0].id);
-      }
-    } catch (err) {
-      setError('감정 목록을 불러오는데 실패했습니다. 백엔드 서버를 확인해주세요.');
-      console.error('Error fetching categories:', err);
+    const routerState = location.state as { recommendationData?: any };
+    if (routerState?.recommendationData) {
+      setRecommendations(routerState.recommendationData.recommendations || []);
     }
-  };
-
-  const fetchRecommendations = async (_emotion: string) => {
-    setIsLoading(true);
-    setRecommendations([]);
-    setError('');
-    setIsLoading(false);
-  };
-
-  const handleCategoryChange = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-    fetchRecommendations(categoryId);
-  };
+  }, [location]);
 
   const handlePlayTrack = (track: Track) => {
     playTrack(track);
@@ -79,24 +42,6 @@ export const AiChartPage = () => {
           </p>
         </div>
 
-        {/* Category Filter */}
-        <div className="mb-8">
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => handleCategoryChange(category.id)}
-                className={`px-6 py-3 rounded-full font-semibold whitespace-nowrap transition ${
-                  selectedCategory === category.id
-                    ? 'bg-[#ff3c6e] text-white'
-                    : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700'
-                }`}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Error Message */}
         {error && (
