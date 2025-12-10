@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mic, Square, Music, Loader2 } from 'lucide-react';
-import { usePlayer } from '@/features/player';
-import { Track } from '@/entities/music/model/types';
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Mic, Square, Music, Loader2 } from "lucide-react";
+import { usePlayer } from "@/features/player";
+import { Track } from "@/entities/music/model/types";
 
 interface RecommendationResponse {
   emotion: string;
@@ -16,8 +16,9 @@ interface RecommendationResponse {
 export const AiCharPage = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [recommendations, setRecommendations] = useState<RecommendationResponse | null>(null);
-  const [error, setError] = useState<string>('');
+  const [recommendations, setRecommendations] =
+    useState<RecommendationResponse | null>(null);
+  const [error, setError] = useState<string>("");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -28,7 +29,7 @@ export const AiCharPage = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
+        mimeType: "audio/webm;codecs=opus",
       });
 
       audioChunksRef.current = [];
@@ -40,18 +41,20 @@ export const AiCharPage = () => {
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: "audio/webm",
+        });
         await analyzeAudio(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.start();
       setIsRecording(true);
-      setError('');
+      setError("");
     } catch (err) {
-      setError('마이크 접근 권한이 필요합니다.');
-      console.error('Error accessing microphone:', err);
+      setError("마이크 접근 권한이 필요합니다.");
+      console.error("Error accessing microphone:", err);
     }
   };
 
@@ -73,31 +76,36 @@ export const AiCharPage = () => {
 
       const base64Audio = await blobToBase64(wavBlob);
 
-      const response = await fetch('http://localhost:8000/api/analyze-emotion', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          audioData: base64Audio.split(',')[1]
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/analyze-emotion",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            audioData: base64Audio.split(",")[1],
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('분석 중 오류가 발생했습니다.');
+        throw new Error("분석 중 오류가 발생했습니다.");
       }
 
       const data: RecommendationResponse = await response.json();
       setRecommendations(data);
-      setError('');
+      setError("");
 
-      // 분석 완료 후 차트 페이지로 이동 (1초 후)
+      // 분석 완료 후 차트 페이지로 이동 (3초 후)
       setTimeout(() => {
-        navigate('/aichart', { state: { recommendationData: data } });
-      }, 1000);
+        navigate("/aichart", { state: { recommendationData: data } });
+      }, 3000);
     } catch (err) {
-      setError('음악 추천 중 오류가 발생했습니다. 백엔드 서버가 실행 중인지 확인해주세요.');
-      console.error('Error analyzing audio:', err);
+      setError(
+        "음악 추천 중 오류가 발생했습니다. 백엔드 서버가 실행 중인지 확인해주세요."
+      );
+      console.error("Error analyzing audio:", err);
     } finally {
       setIsAnalyzing(false);
     }
@@ -116,18 +124,22 @@ export const AiCharPage = () => {
         }
       };
 
-      const floatTo16BitPCM = (output: DataView, offset: number, input: Float32Array) => {
+      const floatTo16BitPCM = (
+        output: DataView,
+        offset: number,
+        input: Float32Array
+      ) => {
         for (let i = 0; i < input.length; i++, offset += 2) {
           const s = Math.max(-1, Math.min(1, input[i]));
-          output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+          output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
         }
       };
 
       // WAV header
-      writeString(0, 'RIFF');
+      writeString(0, "RIFF");
       view.setUint32(4, 36 + length, true);
-      writeString(8, 'WAVE');
-      writeString(12, 'fmt ');
+      writeString(8, "WAVE");
+      writeString(12, "fmt ");
       view.setUint32(16, 16, true);
       view.setUint16(20, 1, true);
       view.setUint16(22, numberOfChannels, true);
@@ -135,7 +147,7 @@ export const AiCharPage = () => {
       view.setUint32(28, buffer.sampleRate * numberOfChannels * 2, true);
       view.setUint16(32, numberOfChannels * 2, true);
       view.setUint16(34, 16, true);
-      writeString(36, 'data');
+      writeString(36, "data");
       view.setUint32(40, length, true);
 
       // PCM data
@@ -148,7 +160,7 @@ export const AiCharPage = () => {
         }
       }
 
-      resolve(new Blob([arrayBuffer], { type: 'audio/wav' }));
+      resolve(new Blob([arrayBuffer], { type: "audio/wav" }));
     });
   };
 
@@ -192,17 +204,14 @@ export const AiCharPage = () => {
           </div>
 
           <div className="mb-6">
-            {isRecording && (
-              <p className="text-lg mb-2">녹음 중...</p>
-            )}
-            {isAnalyzing && (
-              <p className="text-lg mb-2">분석 중...</p>
-            )}
+            {isRecording && <p className="text-lg mb-2">녹음 중...</p>}
+            {isAnalyzing && <p className="text-lg mb-2">분석 중...</p>}
             {!isRecording && !isAnalyzing && (
               <p className="text-lg mb-2">녹음 버튼을 눌러 음성을 녹음하세요</p>
             )}
             <p className="text-sm text-gray-400">
-              5-10초 정도 말하거나 소리를 내시면 더 정확한 감정 분석을 받을 수 있습니다.
+              5-10초 정도 말하거나 소리를 내시면 더 정확한 감정 분석을 받을 수
+              있습니다.
             </p>
           </div>
 
@@ -242,9 +251,12 @@ export const AiCharPage = () => {
                 {recommendations.emotion_description}
               </h2>
               <p className="text-sm text-gray-500 mb-3">
-                감정: {recommendations.emotion} | 신뢰도: {(recommendations.confidence * 100).toFixed(1)}%
+                감정: {recommendations.emotion} | 신뢰도:{" "}
+                {(recommendations.confidence * 100).toFixed(1)}%
               </p>
-              <p className="text-gray-400 whitespace-pre-line">{recommendations.recommendation_message}</p>
+              <p className="text-gray-400 whitespace-pre-line">
+                {recommendations.recommendation_message}
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -255,13 +267,14 @@ export const AiCharPage = () => {
                   onClick={() => handlePlayTrack(track)}
                 >
                   <div className="aspect-square bg-zinc-700 rounded-lg mb-3 overflow-hidden relative">
-                    {track.coverUrl.startsWith('http') || track.coverUrl.startsWith('/images') ? (
+                    {track.coverUrl.startsWith("http") ||
+                    track.coverUrl.startsWith("/images") ? (
                       <img
                         src={track.coverUrl}
                         alt={track.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.style.display = "none";
                         }}
                       />
                     ) : (
@@ -272,7 +285,11 @@ export const AiCharPage = () => {
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition flex items-center justify-center">
                       <div className="opacity-0 group-hover:opacity-100 transition">
                         <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-                          <svg className="w-6 h-6 text-black ml-1" fill="currentColor" viewBox="0 0 24 24">
+                          <svg
+                            className="w-6 h-6 text-black ml-1"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
                             <path d="M8 5v14l11-7z" />
                           </svg>
                         </div>
@@ -280,7 +297,9 @@ export const AiCharPage = () => {
                     </div>
                   </div>
                   <h3 className="font-semibold mb-1 truncate">{track.title}</h3>
-                  <p className="text-sm text-gray-400 truncate">{track.artist}</p>
+                  <p className="text-sm text-gray-400 truncate">
+                    {track.artist}
+                  </p>
                 </div>
               ))}
             </div>
